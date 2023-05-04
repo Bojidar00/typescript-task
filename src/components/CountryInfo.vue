@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { Country } from '../countrieType'
+import type { Country } from '../countryInterface'
+import { tableHeaders } from '../constants'
 import { useCountriesStore } from '@/stores/countries'
 
 const countriesStore = useCountriesStore()
@@ -16,8 +17,7 @@ function closeModal(): void {
       <h3>Details view</h3>
       <table>
         <tr>
-          <th>Country</th>
-          <th>Capital</th>
+          <th v-for="header in tableHeaders">{{ header }}</th>
         </tr>
         <tr>
           <td>{{ countriesStore.selectedCountry.name.common }}</td>

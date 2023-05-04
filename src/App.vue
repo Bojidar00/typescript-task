@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCountriesStore } from '@/stores/countries'
-import {  RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import CountryInfo from './components/CountryInfo.vue'
 import CountdownMessage from './components/CountdownMessage.vue'
 
@@ -10,8 +10,7 @@ const countriesStore = useCountriesStore()
 <template>
   <RouterView />
   <CountryInfo v-if="Object.keys(countriesStore.selectedCountry).length" />
-  <CountdownMessage v-if="countriesStore.showToast" />
+  <CountdownMessage v-if="countriesStore.showToastDuration" />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

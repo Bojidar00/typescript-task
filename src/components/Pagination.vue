@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-const props = defineProps<{
+
+interface paginationProps {
   maxVisibleButtons: number
   totalPages: number
   perPage: number
   currentPage: number
-}>()
+}
+
+const props = defineProps<paginationProps>()
 
 const startPage = computed((): number => {
   if (props.currentPage === 1) {

@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Country } from '../countrieType'
+import type { Country } from '../countryInterface'
 import { useCountriesStore } from '@/stores/countries'
 
+const props = defineProps<{ countrie: Country }>()
+
 const countriesStore = useCountriesStore()
-const props = defineProps<{
-  countrie: Country
-}>()
 
 let interval = ref<number>()
 
 const emit = defineEmits(['hold'])
 
 function mouseDown() {
-  console.log('a')
-  countriesStore.showToast = true
-  interval.value = setInterval(test, 2000)
+  countriesStore.showToastDuration = 500
+  interval.value = setInterval(showCountryInfo, 2000)
 }
 
 function mouseUp() {
-  console.log('clear')
   clearInterval(interval.value)
-  countriesStore.showToast = false
+  countriesStore.showToastDuration = 0
 }
 
-function test() {
-  countriesStore.showToast = false
-  console.log('test')
+function showCountryInfo() {
+  countriesStore.showToastDuration = 0
   emit('hold', props.countrie)
   clearInterval(interval.value)
 }

@@ -4,21 +4,19 @@ import { useCountriesStore } from '@/stores/countries'
 
 const countriesStore = useCountriesStore()
 
-let milliSeconds = ref(500)
+let milliSeconds = ref(countriesStore.showToastDuration)
 
-
-
-function millisToSeconds(millis: number) {
+function millisToSeconds(millis: number): string {
   return (millis / 1000).toPrecision(2)
 }
 
-(async function countDown() {
+;(async function countDown(): Promise<void> {
   while (milliSeconds.value !== 0) {
     await new Promise((r) => setTimeout(r, 1))
-    milliSeconds.value--;
+    milliSeconds.value--
   }
-  countriesStore.showToast = false
-})();
+  countriesStore.showToastDuration = 0
+})()
 </script>
 
 <template>

@@ -1,42 +1,40 @@
 <script setup lang="ts">
-import type { Country } from '../countrieType'
-
-import { useCountriesStore } from '@/stores/countries'
+import { ref } from 'vue'
 import TableRow from './TableRow.vue'
 import Pagination from './Pagination.vue'
-import { ref } from 'vue'
 import DropDownSearch from './DropDownSearch.vue'
+import type { Country } from '../countryInterface'
+import { tableHeaders } from '../constants'
+import { useCountriesStore } from '@/stores/countries'
 
 const countriesStore = useCountriesStore()
 
-let selectedPages = ref<Country[]>()
-let currentPage = ref(1)
-let totalPages = ref(1)
-let maxVisibleButtons = 3
-let itemsPerPage = 10
+let selectedPages = ref<Country[]>([])
+let currentPage = ref<number>(1)
+let totalPages = ref<number>(1)
+let maxVisibleButtons: number = 3
+let itemsPerPage: number = 10
 
-function update(page: number) {
+function update(page: number): void {
   currentPage.value = page
-  let index = (currentPage.value - 1) * itemsPerPage
+  let index: number = (currentPage.value - 1) * itemsPerPage
   selectedPages.value = countriesStore.countries.slice(index, index + itemsPerPage)
 }
 
-function selectCountry(selectedCountry: Country) {
-  console.log(selectedCountry)
+function selectCountry(selectedCountry: Country): void {
   selectedPages.value = [selectedCountry]
 }
 
-function showInfo(a: Country) {
-  console.log('showInfo')
-  countriesStore.setSelectedCountry(a)
+function showInfo(country: Country): void {
+  countriesStore.setSelectedCountry(country)
 }
 
-function restoreTable() {
+function restoreTable(): void {
   currentPage.value = 1
   loadData()
 }
 
-async function loadData() {
+async function loadData(): Promise<void> {
   await countriesStore.fetchCountries()
   totalPages.value = countriesStore.countries.length / itemsPerPage
   selectedPages.value = countriesStore.countries.slice(
@@ -45,6 +43,39 @@ async function loadData() {
   )
 }
 loadData()
+
+function sort(property: string): void {
+  switch (property) {
+    case 'Country': {
+      selectedPages.value?.sort((a, b) => {
+        const nameA = a.name.common.toUpperCase()
+        const nameB = b.name.common.toUpperCase()
+        if (nameA < nameB) {
+          return -1
+        }
+        if (nameA > nameB) {
+          return 1
+        }
+        return 0
+      })
+      break
+    }
+    case 'Capital': {
+      selectedPages.value?.sort((a, b) => {
+        const nameA = a.capital[0] ? a.capital[0].toUpperCase() : ''
+        const nameB = b.capital[0] ? b.capital[0].toUpperCase() : ''
+        if (nameA < nameB) {
+          return -1
+        }
+        if (nameA > nameB) {
+          return 1
+        }
+        return 0
+      })
+      break
+    }
+  }
+}
 </script>
 
 <template>
@@ -60,13 +91,13 @@ loadData()
 
   <table>
     <tr>
-      <th>Country</th>
-      <th>Capital</th>
+      <th v-for="header in tableHeaders" @click="sort(header)">{{ header }}</th>
     </tr>
 
     <TableRow v-for="c in selectedPages" :countrie="c" @hold="showInfo" />
   </table>
   <Pagination
+    v-if="selectedPages.length > 1"
     :maxVisibleButtons="maxVisibleButtons"
     :totalPages="totalPages"
     :perPage="itemsPerPage"

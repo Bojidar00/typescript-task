@@ -1,19 +1,19 @@
 import { ref, computed } from 'vue'
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import type { Country } from '../countrieType'
+import type { Country } from '../countryInterface'
 
-type State = {
+interface State {
   countries: Country[]
   selectedCountry: Country
-  showToast: boolean
+  showToastDuration: number
 }
 
 export const useCountriesStore = defineStore('countries', {
   state: (): State => ({
     countries: [],
     selectedCountry: <Country>{},
-    showToast: false
+    showToastDuration: 0
   }),
   actions: {
     async fetchCountries() {
